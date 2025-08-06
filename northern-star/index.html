@@ -25,15 +25,22 @@
 				--text-light: rgba(26, 29, 30, 0.8);
 				--glass: rgba(255, 255, 255, 0.6);
 				--glass-border: rgba(222, 240, 250, 0.4);
+
+				/* --- New Colors --- */
+				--brand-red: #d21921;
+				--brand-red-soft: rgba(210, 25, 33, 0.1);
+				--brand-pink: #f3c8cf;
+				--brand-pink-soft: rgba(243, 200, 207, 0.35);
 			}
 
 			body {
 				font-family: "Inter", sans-serif;
 				background: linear-gradient(
 					135deg,
-					rgba(222, 240, 250, 0.2) 0%,
-					rgba(255, 255, 255, 0.9) 30%,
-					rgba(220, 235, 243, 0.15) 70%,
+					var(--crystal-blue) 0%,
+					var(--brand-pink-soft) 25%,
+					rgba(255, 255, 255, 0.9) 50%,
+					var(--crystal-water) 75%,
 					rgba(255, 255, 255, 0.95) 100%
 				);
 				min-height: 100vh;
@@ -101,7 +108,11 @@
 				font-weight: 200;
 				text-align: center;
 				margin-bottom: 2rem;
-				background: linear-gradient(135deg, var(--lime), var(--crystal-blue));
+				background: linear-gradient(
+					135deg,
+					var(--text-medium),
+					var(--brand-red)
+				);
 				-webkit-background-clip: text;
 				-webkit-text-fill-color: transparent;
 				background-clip: text;
@@ -121,12 +132,12 @@
 				font-size: 1.4rem;
 				font-weight: 500;
 				text-align: center;
-				color: var(--lime);
+				color: var(--brand-red);
 				margin-bottom: 3rem;
 				padding: 1rem 2rem;
-				background: var(--lime-soft);
+				background: var(--brand-red-soft);
 				border-radius: 50px;
-				border: 1px solid rgba(212, 219, 62, 0.3);
+				border: 1px solid rgba(210, 25, 33, 0.2);
 			}
 
 			.content-grid {
@@ -157,7 +168,7 @@
 			}
 
 			.content-block h3 {
-				color: var(--lime);
+				color: var(--text-medium);
 				font-size: 1.4rem;
 				font-weight: 600;
 				margin-bottom: 1rem;
@@ -207,7 +218,7 @@
 				top: 50%;
 				transform: translateY(-50%);
 				font-size: 1.5rem;
-				color: var(--lime);
+				color: var(--brand-red);
 				font-weight: bold;
 			}
 
@@ -219,7 +230,7 @@
 				width: 40px;
 				height: 40px;
 				border-radius: 50%;
-				background: linear-gradient(135deg, var(--lime), var(--crystal-blue));
+				background: linear-gradient(135deg, var(--brand-red), var(--lime));
 				color: white;
 				display: flex;
 				align-items: center;
@@ -241,14 +252,19 @@
 
 			.pricing-card:hover {
 				transform: translateY(-10px);
-				border-color: var(--lime);
+				border-color: var(--brand-red);
 			}
 
 			.pricing-amount {
 				font-size: 2.5rem;
 				font-weight: 700;
-				color: var(--lime);
 				margin: 1rem 0;
+			}
+			.pricing-card:first-child .pricing-amount {
+				color: var(--lime);
+			}
+			.pricing-card:last-child .pricing-amount {
+				color: var(--brand-red);
 			}
 
 			.bridge-visual {
@@ -271,7 +287,7 @@
 
 			.bridge-arrow {
 				font-size: 3rem;
-				color: var(--lime);
+				color: var(--brand-red);
 				font-weight: bold;
 			}
 
@@ -296,12 +312,43 @@
 
 			.stakeholder-card:hover {
 				transform: translateY(-5px);
-				border-color: var(--lime);
+				border-color: var(--brand-red);
 			}
 
 			.stakeholder-icon {
 				font-size: 2rem;
-				margin-bottom: 0.5rem;
+				margin: 0 auto 1rem;
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: 500;
+			}
+			/* CEO */
+			.stakeholder-card:nth-child(1) .stakeholder-icon {
+				background: var(--crystal-grey);
+			}
+			/* CFO */
+			.stakeholder-card:nth-child(2) .stakeholder-icon {
+				background: var(--brand-red-soft);
+			}
+			/* COO */
+			.stakeholder-card:nth-child(3) .stakeholder-icon {
+				background: var(--lime-soft);
+			}
+			/* CIO */
+			.stakeholder-card:nth-child(4) .stakeholder-icon {
+				background: var(--crystal-grey);
+			}
+			/* HR */
+			.stakeholder-card:nth-child(5) .stakeholder-icon {
+				background: var(--brand-pink-soft);
+			}
+			/* Business Users */
+			.stakeholder-card:nth-child(6) .stakeholder-icon {
+				background: var(--lime-soft);
 			}
 
 			.navigation {
@@ -328,7 +375,8 @@
 
 			.nav-btn:hover,
 			.nav-btn.active {
-				background: var(--lime);
+				background: var(--brand-red);
+				border-color: var(--brand-red);
 				color: white;
 				transform: translateY(-2px);
 			}
@@ -387,18 +435,24 @@
 			.vs-divider {
 				font-size: 3rem;
 				font-weight: bold;
-				color: var(--lime);
+				color: var(--brand-red);
 				text-align: center;
 			}
 
 			.problem-card {
-				background: rgba(255, 107, 107, 0.1);
-				border: 1px solid rgba(255, 107, 107, 0.2);
+				background: var(--brand-red-soft);
+				border: 1px solid rgba(210, 25, 33, 0.2);
+			}
+			.problem-card h3 {
+				color: var(--brand-red);
 			}
 
 			.solution-card {
 				background: var(--lime-soft);
 				border: 1px solid rgba(212, 219, 62, 0.3);
+			}
+			.solution-card h3 {
+				color: #5d6013; /* A darker shade of lime for text */
 			}
 
 			@media (max-width: 768px) {
@@ -450,7 +504,6 @@
 				<span id="current-slide">1</span> / <span id="total-slides">10</span>
 			</div>
 
-			<!-- Slide 1: Title -->
 			<div class="slide active">
 				<div class="glass-card">
 					<h1 class="hero-title">The Anti-Consultant</h1>
@@ -461,7 +514,6 @@
 				</div>
 			</div>
 
-			<!-- Slide 2: The Root Problem -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">The Root Problem</h1>
@@ -488,14 +540,20 @@
 							</ul>
 						</div>
 					</div>
-					<p class="tagline highlight">
+					<div
+						class="tagline highlight"
+						style="
+							color: var(--text-medium);
+							border: 1px solid var(--lime-soft);
+							background: var(--lime-soft);
+						"
+					>
 						Deep thinking, NOT overthinking • Intelligent action, NOT analysis
 						paralysis
-					</p>
+					</div>
 				</div>
 			</div>
 
-			<!-- Slide 3: The IT-Business Bridge -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">Bridging the IT-Business Divide</h1>
@@ -528,7 +586,6 @@
 				</div>
 			</div>
 
-			<!-- Slide 4: Our Anti-Consultant Approach -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">The Anti-Consultant Method</h1>
@@ -565,7 +622,6 @@
 				</div>
 			</div>
 
-			<!-- Slide 5: Multi-Stakeholder Value -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">Value for Every Stakeholder</h1>
@@ -607,7 +663,6 @@
 				</div>
 			</div>
 
-			<!-- Slide 6: Workshop Series Structure -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">2-Day Workshop Series</h1>
@@ -656,7 +711,6 @@
 				</div>
 			</div>
 
-			<!-- Slide 7: Certification Program -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">AI Solutions Architecture</h1>
@@ -696,13 +750,19 @@
 							organizational friction and accelerating innovation.
 						</p>
 					</div>
-					<div class="tagline highlight">
+					<div
+						class="tagline highlight"
+						style="
+							color: var(--text-medium);
+							border: 1px solid var(--lime-soft);
+							background: var(--lime-soft);
+						"
+					>
 						Earn the title: "AI Solutions Architect"
 					</div>
 				</div>
 			</div>
 
-			<!-- Slide 8: Success Framework -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">Measurable Success Framework</h1>
@@ -741,7 +801,6 @@
 				</div>
 			</div>
 
-			<!-- Slide 9: Investment & Returns -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">Investment & Returns</h1>
@@ -788,7 +847,6 @@
 				</div>
 			</div>
 
-			<!-- Slide 10: Partnership Opportunity -->
 			<div class="slide">
 				<div class="glass-card">
 					<h1 class="hero-title">Partnership Opportunity</h1>
@@ -859,12 +917,14 @@
 				currentSlide = n;
 
 				// Update nav buttons
-				document
-					.querySelectorAll(".nav-btn")
-					.forEach((btn) => btn.classList.remove("active"));
-				if (n === 0) document.querySelector(".nav-btn").classList.add("active");
-				if (n === totalSlides - 1)
-					document.querySelector(".nav-btn:last-child").classList.add("active");
+				const navButtons = document.querySelectorAll(".navigation .nav-btn");
+				navButtons.forEach((btn) => btn.classList.remove("active"));
+				if (n === 0 && navButtons[0].innerText === "Start")
+					navButtons[0].classList.add("active");
+				if (n === 6 && navButtons[3].innerText === "Certification")
+					navButtons[3].classList.add("active");
+				if (n === 9 && navButtons[4].innerText === "Partnership")
+					navButtons[4].classList.add("active");
 			}
 
 			function nextSlide() {
@@ -917,16 +977,22 @@
 			// Auto-advance animation triggers
 			function triggerAnimations() {
 				const activeSlide = document.querySelector(".slide.active");
+				if (!activeSlide) return;
+
 				const fadeElements = activeSlide.querySelectorAll(".fade-in");
 				const highlightElements = activeSlide.querySelectorAll(".highlight");
 
 				fadeElements.forEach((el, index) => {
+					el.style.animation = "none";
+					el.offsetHeight; /* trigger reflow */
 					el.style.animation = `fadeIn 0.8s ease-out ${
 						0.3 + index * 0.2
 					}s forwards`;
 				});
 
 				highlightElements.forEach((el, index) => {
+					el.style.animation = "none";
+					el.offsetHeight; /* trigger reflow */
 					el.style.animation = `highlight 0.8s ease-out ${
 						0.5 + index * 0.2
 					}s forwards`;
