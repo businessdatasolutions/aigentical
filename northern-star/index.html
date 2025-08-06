@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>The Anti-Consultant: AI Solutions Architecture</title>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap");
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			:root {
+				--lime: #d4db3e;
+				--lime-soft: rgba(212, 219, 62, 0.15);
+				--crystal-blue: #def0fa;
+				--crystal-water: #dcebf3;
+				--crystal-grey: rgba(222, 240, 250, 0.3);
+				--water-blue: #dcebf3;
+				--text-dark: #1a1d1e;
+				--text-medium: #2d3436;
+				--text-light: rgba(26, 29, 30, 0.8);
+				--glass: rgba(255, 255, 255, 0.6);
+				--glass-border: rgba(222, 240, 250, 0.4);
+			}
+
+			body {
+				font-family: "Inter", sans-serif;
+				background: linear-gradient(
+					135deg,
+					rgba(222, 240, 250, 0.2) 0%,
+					rgba(255, 255, 255, 0.9) 30%,
+					rgba(220, 235, 243, 0.15) 70%,
+					rgba(255, 255, 255, 0.95) 100%
+				);
+				min-height: 100vh;
+				color: var(--text-dark);
+				overflow-x: hidden;
+			}
+
+			.presentation {
+				position: relative;
+				width: 100vw;
+				height: 100vh;
+				overflow: hidden;
+			}
+
+			.slide {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				padding: 6rem 4rem;
+				opacity: 0;
+				transform: translateX(100px);
+				transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+				backdrop-filter: blur(10px);
+			}
+
+			.slide.active {
+				opacity: 1;
+				transform: translateX(0);
+			}
+
+			.slide.prev {
+				transform: translateX(-100px);
+			}
+
+			.glass-card {
+				background: var(--glass);
+				backdrop-filter: blur(20px);
+				border: 1px solid var(--glass-border);
+				border-radius: 24px;
+				padding: 4rem;
+				max-width: 1100px;
+				width: 100%;
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+				margin: 2rem auto;
+			}
+
+			@keyframes float {
+				0%,
+				100% {
+					transform: translateY(0px);
+				}
+				50% {
+					transform: translateY(-10px);
+				}
+			}
+
+			.hero-title {
+				font-size: clamp(2.5rem, 5vw, 4rem);
+				font-weight: 200;
+				text-align: center;
+				margin-bottom: 2rem;
+				background: linear-gradient(135deg, var(--lime), var(--crystal-blue));
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+				letter-spacing: -0.02em;
+			}
+
+			.subtitle {
+				font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+				font-weight: 300;
+				text-align: center;
+				color: var(--text-medium);
+				margin-bottom: 3rem;
+				line-height: 1.6;
+			}
+
+			.tagline {
+				font-size: 1.4rem;
+				font-weight: 500;
+				text-align: center;
+				color: var(--lime);
+				margin-bottom: 3rem;
+				padding: 1rem 2rem;
+				background: var(--lime-soft);
+				border-radius: 50px;
+				border: 1px solid rgba(212, 219, 62, 0.3);
+			}
+
+			.content-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 4rem;
+				width: 100%;
+				max-width: 1200px;
+				margin: 3rem 0;
+			}
+
+			.content-grid-three {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 3rem;
+				width: 100%;
+				max-width: 1200px;
+				margin: 3rem 0;
+			}
+
+			.content-block {
+				background: var(--glass);
+				border: 1px solid var(--glass-border);
+				border-radius: 16px;
+				padding: 2.5rem;
+				backdrop-filter: blur(15px);
+				margin-bottom: 1rem;
+			}
+
+			.content-block h3 {
+				color: var(--lime);
+				font-size: 1.4rem;
+				font-weight: 600;
+				margin-bottom: 1rem;
+			}
+
+			.content-block p,
+			.content-block li {
+				color: var(--text-medium);
+				line-height: 1.6;
+				margin-bottom: 0.5rem;
+			}
+
+			.content-block ul {
+				padding-left: 1.5rem;
+			}
+
+			.progression-flow {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				max-width: 1000px;
+				margin: 2rem 0;
+			}
+
+			.flow-step {
+				flex: 1;
+				text-align: center;
+				padding: 1.5rem;
+				background: var(--glass);
+				border: 1px solid var(--glass-border);
+				border-radius: 16px;
+				backdrop-filter: blur(10px);
+				margin: 0 0.5rem;
+				position: relative;
+				transition: transform 0.3s ease;
+			}
+
+			.flow-step:hover {
+				transform: translateY(-5px);
+			}
+
+			.flow-step::after {
+				content: "→";
+				position: absolute;
+				right: -25px;
+				top: 50%;
+				transform: translateY(-50%);
+				font-size: 1.5rem;
+				color: var(--lime);
+				font-weight: bold;
+			}
+
+			.flow-step:last-child::after {
+				display: none;
+			}
+
+			.flow-number {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background: linear-gradient(135deg, var(--lime), var(--crystal-blue));
+				color: white;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: 600;
+				margin: 0 auto 1rem;
+			}
+
+			.pricing-card {
+				background: var(--glass);
+				border: 1px solid var(--glass-border);
+				border-radius: 20px;
+				padding: 2rem;
+				text-align: center;
+				backdrop-filter: blur(10px);
+				margin: 1rem;
+				transition: transform 0.3s ease, border-color 0.3s ease;
+			}
+
+			.pricing-card:hover {
+				transform: translateY(-10px);
+				border-color: var(--lime);
+			}
+
+			.pricing-amount {
+				font-size: 2.5rem;
+				font-weight: 700;
+				color: var(--lime);
+				margin: 1rem 0;
+			}
+
+			.bridge-visual {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 2rem;
+				margin: 2rem 0;
+			}
+
+			.stakeholder-box {
+				background: var(--glass);
+				border: 1px solid var(--glass-border);
+				border-radius: 16px;
+				padding: 1.5rem;
+				text-align: center;
+				backdrop-filter: blur(10px);
+				flex: 1;
+			}
+
+			.bridge-arrow {
+				font-size: 3rem;
+				color: var(--lime);
+				font-weight: bold;
+			}
+
+			.stakeholder-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1.5rem;
+				width: 100%;
+				max-width: 1000px;
+				margin: 2rem 0;
+			}
+
+			.stakeholder-card {
+				background: var(--glass);
+				border: 1px solid var(--glass-border);
+				border-radius: 12px;
+				padding: 1.5rem;
+				text-align: center;
+				backdrop-filter: blur(10px);
+				transition: transform 0.3s ease;
+			}
+
+			.stakeholder-card:hover {
+				transform: translateY(-5px);
+				border-color: var(--lime);
+			}
+
+			.stakeholder-icon {
+				font-size: 2rem;
+				margin-bottom: 0.5rem;
+			}
+
+			.navigation {
+				position: fixed;
+				bottom: 30px;
+				left: 50%;
+				transform: translateX(-50%);
+				display: flex;
+				gap: 1rem;
+				z-index: 1000;
+			}
+
+			.nav-btn {
+				padding: 0.8rem 1.5rem;
+				background: var(--glass);
+				border: 1px solid var(--glass-border);
+				border-radius: 50px;
+				color: var(--text-dark);
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				backdrop-filter: blur(10px);
+			}
+
+			.nav-btn:hover,
+			.nav-btn.active {
+				background: var(--lime);
+				color: white;
+				transform: translateY(-2px);
+			}
+
+			.slide-counter {
+				position: fixed;
+				top: 30px;
+				right: 30px;
+				background: var(--glass);
+				padding: 0.5rem 1rem;
+				border-radius: 20px;
+				border: 1px solid var(--glass-border);
+				backdrop-filter: blur(10px);
+				color: var(--text-dark);
+				font-weight: 600;
+			}
+
+			.highlight {
+				background: linear-gradient(
+					120deg,
+					transparent 0%,
+					var(--lime-soft) 0%
+				);
+				background-size: 100% 0.3em;
+				background-repeat: no-repeat;
+				background-position: 0 85%;
+				animation: highlight 0.8s ease-out 0.5s forwards;
+				background-size: 0 0.3em;
+			}
+
+			@keyframes highlight {
+				to {
+					background-size: 100% 0.3em;
+				}
+			}
+
+			.fade-in {
+				opacity: 0;
+				animation: fadeIn 0.8s ease-out 0.3s forwards;
+			}
+
+			@keyframes fadeIn {
+				to {
+					opacity: 1;
+				}
+			}
+
+			.vs-comparison {
+				display: grid;
+				grid-template-columns: 1fr auto 1fr;
+				gap: 2rem;
+				align-items: center;
+				margin: 2rem 0;
+			}
+
+			.vs-divider {
+				font-size: 3rem;
+				font-weight: bold;
+				color: var(--lime);
+				text-align: center;
+			}
+
+			.problem-card {
+				background: rgba(255, 107, 107, 0.1);
+				border: 1px solid rgba(255, 107, 107, 0.2);
+			}
+
+			.solution-card {
+				background: var(--lime-soft);
+				border: 1px solid rgba(212, 219, 62, 0.3);
+			}
+
+			@media (max-width: 768px) {
+				.content-grid,
+				.content-grid-three {
+					grid-template-columns: 1fr;
+					gap: 1.5rem;
+				}
+
+				.progression-flow {
+					flex-direction: column;
+					gap: 1rem;
+				}
+
+				.flow-step::after {
+					content: "↓";
+					right: auto;
+					bottom: -25px;
+					top: auto;
+				}
+
+				.bridge-visual {
+					flex-direction: column;
+					gap: 1rem;
+				}
+
+				.bridge-arrow {
+					transform: rotate(90deg);
+				}
+
+				.stakeholder-grid {
+					grid-template-columns: repeat(2, 1fr);
+				}
+
+				.vs-comparison {
+					grid-template-columns: 1fr;
+					gap: 1rem;
+				}
+
+				.slide {
+					padding: 3rem 2rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="presentation">
+			<div class="slide-counter">
+				<span id="current-slide">1</span> / <span id="total-slides">10</span>
+			</div>
+
+			<!-- Slide 1: Title -->
+			<div class="slide active">
+				<div class="glass-card">
+					<h1 class="hero-title">The Anti-Consultant</h1>
+					<p class="subtitle">AI Solutions instead of AI Projects</p>
+					<div class="tagline fade-in">
+						Transform Organizations • Develop Talent • Bridge IT-Business
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 2: The Root Problem -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">The Root Problem</h1>
+					<div class="vs-comparison">
+						<div class="content-block problem-card">
+							<h3>❌ Traditional Consulting Delivers</h3>
+							<ul>
+								<li>PowerPoint presentations</li>
+								<li>Strategic frameworks</li>
+								<li>Future roadmaps</li>
+								<li>Analysis paralysis</li>
+								<li>IT vs Business conflicts</li>
+							</ul>
+						</div>
+						<div class="vs-divider">VS</div>
+						<div class="content-block solution-card">
+							<h3>✅ What Organizations Need</h3>
+							<ul>
+								<li>Working AI solutions</li>
+								<li>Internal capabilities</li>
+								<li>IT-Business collaboration</li>
+								<li>Immediate results</li>
+								<li>Self-sufficiency</li>
+							</ul>
+						</div>
+					</div>
+					<p class="tagline highlight">
+						Deep thinking, NOT overthinking • Intelligent action, NOT analysis
+						paralysis
+					</p>
+				</div>
+			</div>
+
+			<!-- Slide 3: The IT-Business Bridge -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">Bridging the IT-Business Divide</h1>
+					<div class="bridge-visual">
+						<div class="stakeholder-box">
+							<h3>🏢 Business Teams</h3>
+							<p>"IT always says no"</p>
+							<p>"They don't understand our needs"</p>
+							<p>"Solutions take forever"</p>
+						</div>
+						<div class="bridge-arrow">🌉</div>
+						<div class="stakeholder-box">
+							<h3>💻 IT Teams</h3>
+							<p>"Business wants impossible things"</p>
+							<p>"Security and stability matter"</p>
+							<p>"They don't understand complexity"</p>
+						</div>
+					</div>
+					<div class="content-block" style="margin-top: 2rem">
+						<h3>🚀 Our Solution: Collaborative Context Engineering</h3>
+						<p>
+							Business people learn to vibe code with IT security context
+							built-in. IT people collaborate on solution design from day one.
+							Both sides understand each other's constraints and requirements.
+						</p>
+					</div>
+					<div class="tagline">
+						When business speaks IT's language, magic happens
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 4: Our Anti-Consultant Approach -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">The Anti-Consultant Method</h1>
+					<div class="content-grid">
+						<div class="content-block">
+							<h3>🔍 Embedded Observation</h3>
+							<p>
+								Deep immersion in operations, culture, and IT-business dynamics.
+								Real understanding, not surface interviews.
+							</p>
+						</div>
+						<div class="content-block">
+							<h3>🤝 Cross-Company Innovation</h3>
+							<p>
+								Multi-organization workshops where participants learn from peer
+								challenges and co-create solutions.
+							</p>
+						</div>
+						<div class="content-block">
+							<h3>💻 Vibe Coding + Context Engineering</h3>
+							<p>
+								Business people code solutions with IT security/testing contexts
+								embedded. Technical literacy meets business needs.
+							</p>
+						</div>
+						<div class="content-block">
+							<h3>🎯 Collaborative Implementation</h3>
+							<p>
+								IT and business jointly deploy solutions with shared testing
+								criteria and maintenance agreements.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 5: Multi-Stakeholder Value -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">Value for Every Stakeholder</h1>
+					<div class="stakeholder-grid">
+						<div class="stakeholder-card">
+							<div class="stakeholder-icon">🎯</div>
+							<h4>CEO</h4>
+							<p>Strategic advantage through internal AI capabilities</p>
+						</div>
+						<div class="stakeholder-card">
+							<div class="stakeholder-icon">💰</div>
+							<h4>CFO</h4>
+							<p>1000%+ ROI, reduced consultant dependency</p>
+						</div>
+						<div class="stakeholder-card">
+							<div class="stakeholder-icon">⚙️</div>
+							<h4>COO</h4>
+							<p>Automated processes, operational efficiency</p>
+						</div>
+						<div class="stakeholder-card">
+							<div class="stakeholder-icon">💻</div>
+							<h4>CIO</h4>
+							<p>Business-IT collaboration, reduced friction</p>
+						</div>
+						<div class="stakeholder-card">
+							<div class="stakeholder-icon">👥</div>
+							<h4>HR</h4>
+							<p>Professional development, certified AI talent</p>
+						</div>
+						<div class="stakeholder-card">
+							<div class="stakeholder-icon">📊</div>
+							<h4>Business Users</h4>
+							<p>Working solutions, technical empowerment</p>
+						</div>
+					</div>
+					<div class="tagline">
+						Every stakeholder wins when IT and business collaborate
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 6: Workshop Series Structure -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">2-Day Workshop Series</h1>
+					<div class="progression-flow">
+						<div class="flow-step">
+							<div class="flow-number">1</div>
+							<h3>Pre-Workshop</h3>
+							<p>Embedded observation + IT-Business friction mapping</p>
+						</div>
+						<div class="flow-step">
+							<div class="flow-number">2</div>
+							<h3>Day 1</h3>
+							<p>Joint problem ID + vibe coding with security context</p>
+						</div>
+						<div class="flow-step">
+							<div class="flow-number">3</div>
+							<h3>Inter-Session</h3>
+							<p>IT-Business collaboration + testing criteria agreement</p>
+						</div>
+						<div class="flow-step">
+							<div class="flow-number">4</div>
+							<h3>Day 2</h3>
+							<p>Solution deployment + scaling strategy</p>
+						</div>
+					</div>
+					<div class="content-grid" style="margin-top: 2rem">
+						<div class="content-block">
+							<h3>Collaborative Context Engineering</h3>
+							<ul>
+								<li>Security requirements embedded in coding context</li>
+								<li>Testing frameworks business people understand</li>
+								<li>Deployment criteria agreed by both sides</li>
+								<li>Maintenance protocols jointly defined</li>
+							</ul>
+						</div>
+						<div class="content-block">
+							<h3>Cross-Industry Learning</h3>
+							<ul>
+								<li>5-6 companies per cohort</li>
+								<li>Different industries, similar challenges</li>
+								<li>Peer learning and solution sharing</li>
+								<li>Network effects and ongoing collaboration</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 7: Certification Program -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">AI Solutions Architecture</h1>
+					<p class="subtitle">Professional Certification Program</p>
+					<div class="content-grid">
+						<div class="content-block">
+							<h3>Program Structure (8-12 weeks)</h3>
+							<ul>
+								<li><strong>Foundation:</strong> Workshop credits applied</li>
+								<li>
+									<strong>Advanced Design:</strong> Enterprise architecture
+								</li>
+								<li><strong>Implementation:</strong> DevOps + security</li>
+								<li>
+									<strong>Leadership:</strong> Business impact + mentoring
+								</li>
+								<li><strong>Capstone:</strong> Production deployment</li>
+							</ul>
+						</div>
+						<div class="content-block">
+							<h3>Certification Levels</h3>
+							<ul>
+								<li><strong>Associate:</strong> Workshop + 1 solution</li>
+								<li><strong>Certified:</strong> Full program + 3 solutions</li>
+								<li><strong>Master:</strong> 5+ solutions + mentoring</li>
+								<li>
+									<strong>Principal:</strong> Enterprise transformation lead
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="content-block" style="margin-top: 2rem">
+						<h3>IT-Business Bridge Builders</h3>
+						<p>
+							Certified architects become internal champions who can translate
+							between business needs and technical requirements, reducing
+							organizational friction and accelerating innovation.
+						</p>
+					</div>
+					<div class="tagline highlight">
+						Earn the title: "AI Solutions Architect"
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 8: Success Framework -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">Measurable Success Framework</h1>
+					<div class="content-grid-three">
+						<div class="content-block">
+							<h3>💼 Business Metrics</h3>
+							<ul>
+								<li>Solution deployment rate: 85%+</li>
+								<li>Time to implementation: 70% faster</li>
+								<li>Business user satisfaction: 95%+</li>
+								<li>Innovation project success: 3x higher</li>
+							</ul>
+						</div>
+						<div class="content-block">
+							<h3>🛡️ IT Metrics</h3>
+							<ul>
+								<li>Security incidents: 90% reduction</li>
+								<li>Support ticket volume: 60% decrease</li>
+								<li>Approval cycle time: 50% faster</li>
+								<li>IT-Business satisfaction: 4.8/5</li>
+							</ul>
+						</div>
+						<div class="content-block">
+							<h3>🎯 Organizational Metrics</h3>
+							<ul>
+								<li>Consultant dependency: 80% reduction</li>
+								<li>Cross-department collaboration: +200%</li>
+								<li>Employee skill development: Certified</li>
+								<li>Innovation velocity: 5x increase</li>
+							</ul>
+						</div>
+					</div>
+					<div class="tagline">
+						Success measured by solutions working, not presentations delivered
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 9: Investment & Returns -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">Investment & Returns</h1>
+					<div class="content-grid">
+						<div class="pricing-card">
+							<h3>Workshop Series</h3>
+							<div class="pricing-amount">€25K</div>
+							<p>Per company (3-5 participants)</p>
+							<p>IT + Business collaboration</p>
+							<p>Working solutions + certification path</p>
+						</div>
+						<div class="pricing-card">
+							<h3>Certification Program</h3>
+							<div class="pricing-amount">€12K</div>
+							<p>Per individual (workshop alumni)</p>
+							<p>Professional development track</p>
+							<p>AI Solutions Architect certification</p>
+						</div>
+					</div>
+					<div class="content-block" style="margin-top: 2rem">
+						<h3>Business Model & Projections</h3>
+						<div class="content-grid">
+							<div>
+								<p>
+									<strong>Workshop Revenue:</strong> 2/month × 5 companies ×
+									€25K = €250K monthly
+								</p>
+								<p>
+									<strong>Certification Revenue:</strong> 40% conversion × €12K
+									= €60K monthly
+								</p>
+								<p>
+									<strong>Annual Renewals:</strong> €2.5K × growing base =
+									€150K+ recurring
+								</p>
+							</div>
+							<div>
+								<p><strong>Year 1 Target:</strong> €2.4M ARR</p>
+								<p><strong>Year 2 Target:</strong> €4.8M ARR</p>
+								<p><strong>Margins:</strong> 85%+ (AI-augmented delivery)</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide 10: Partnership Opportunity -->
+			<div class="slide">
+				<div class="glass-card">
+					<h1 class="hero-title">Partnership Opportunity</h1>
+					<div class="content-grid">
+						<div class="content-block">
+							<h3>Market Transformation</h3>
+							<ul>
+								<li>Create new professional category</li>
+								<li>Disrupt traditional consulting model</li>
+								<li>Build scalable certification ecosystem</li>
+								<li>International expansion ready</li>
+								<li>AI-native service delivery</li>
+							</ul>
+						</div>
+						<div class="content-block">
+							<h3>Partnership Value</h3>
+							<ul>
+								<li>Market credibility and access</li>
+								<li>Scaling infrastructure and operations</li>
+								<li>Joint go-to-market strategy</li>
+								<li>Shared success and equity upside</li>
+								<li>Complementary expertise</li>
+							</ul>
+						</div>
+					</div>
+					<div class="content-block" style="margin-top: 2rem">
+						<h3>The Vision</h3>
+						<p>
+							Transform how organizations approach AI adoption and IT-business
+							collaboration. Move from consultant dependency to internal
+							capability. Create a new generation of "AI Solutions Architects"
+							who bridge technical and business worlds.
+						</p>
+					</div>
+					<div class="tagline">
+						Ready to build the future of business transformation?
+					</div>
+				</div>
+			</div>
+
+			<div class="navigation">
+				<button class="nav-btn active" onclick="goToSlide(0)">Start</button>
+				<button class="nav-btn" onclick="prevSlide()">Previous</button>
+				<button class="nav-btn" onclick="nextSlide()">Next</button>
+				<button class="nav-btn" onclick="goToSlide(6)">Certification</button>
+				<button class="nav-btn" onclick="goToSlide(9)">Partnership</button>
+			</div>
+		</div>
+
+		<script>
+			let currentSlide = 0;
+			const slides = document.querySelectorAll(".slide");
+			const totalSlides = slides.length;
+
+			document.getElementById("total-slides").textContent = totalSlides;
+
+			function showSlide(n) {
+				slides.forEach((slide, index) => {
+					slide.classList.remove("active", "prev");
+					if (index === n) {
+						slide.classList.add("active");
+					} else if (index < n) {
+						slide.classList.add("prev");
+					}
+				});
+
+				document.getElementById("current-slide").textContent = n + 1;
+				currentSlide = n;
+
+				// Update nav buttons
+				document
+					.querySelectorAll(".nav-btn")
+					.forEach((btn) => btn.classList.remove("active"));
+				if (n === 0) document.querySelector(".nav-btn").classList.add("active");
+				if (n === totalSlides - 1)
+					document.querySelector(".nav-btn:last-child").classList.add("active");
+			}
+
+			function nextSlide() {
+				if (currentSlide < totalSlides - 1) {
+					showSlide(currentSlide + 1);
+				}
+			}
+
+			function prevSlide() {
+				if (currentSlide > 0) {
+					showSlide(currentSlide - 1);
+				}
+			}
+
+			function goToSlide(n) {
+				if (n >= 0 && n < totalSlides) {
+					showSlide(n);
+				}
+			}
+
+			// Keyboard navigation
+			document.addEventListener("keydown", (e) => {
+				if (e.key === "ArrowRight" || e.key === " ") nextSlide();
+				if (e.key === "ArrowLeft") prevSlide();
+				if (e.key === "Home") goToSlide(0);
+				if (e.key === "End") goToSlide(totalSlides - 1);
+			});
+
+			// Touch/swipe support
+			let startX = 0;
+			let startY = 0;
+
+			document.addEventListener("touchstart", (e) => {
+				startX = e.touches[0].clientX;
+				startY = e.touches[0].clientY;
+			});
+
+			document.addEventListener("touchend", (e) => {
+				const endX = e.changedTouches[0].clientX;
+				const endY = e.changedTouches[0].clientY;
+				const diffX = startX - endX;
+				const diffY = startY - endY;
+
+				if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+					if (diffX > 0) nextSlide();
+					else prevSlide();
+				}
+			});
+
+			// Auto-advance animation triggers
+			function triggerAnimations() {
+				const activeSlide = document.querySelector(".slide.active");
+				const fadeElements = activeSlide.querySelectorAll(".fade-in");
+				const highlightElements = activeSlide.querySelectorAll(".highlight");
+
+				fadeElements.forEach((el, index) => {
+					el.style.animation = `fadeIn 0.8s ease-out ${
+						0.3 + index * 0.2
+					}s forwards`;
+				});
+
+				highlightElements.forEach((el, index) => {
+					el.style.animation = `highlight 0.8s ease-out ${
+						0.5 + index * 0.2
+					}s forwards`;
+				});
+			}
+
+			// Initialize
+			showSlide(0);
+			setTimeout(triggerAnimations, 100);
+
+			// Trigger animations on slide change
+			const originalShowSlide = showSlide;
+			showSlide = function (n) {
+				originalShowSlide(n);
+				setTimeout(triggerAnimations, 300);
+			};
+		</script>
+	</body>
+</html>
